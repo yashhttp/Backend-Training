@@ -53,6 +53,7 @@ app.put("/products/:id", (req,res)=>{
      res.json(product)
     
 })
+// delete
 app.delete("/products/:id", (req,res)=>{
     const id=parseInt(req.params.id)
     const productList = products.filter(p=>p.id!=!id)
