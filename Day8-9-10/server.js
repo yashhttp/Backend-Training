@@ -281,6 +281,226 @@ const user = mongoose.model("User", userSchema)
 
 })
 
+
+// DAY 9 START
+// DAY 9 START
+// DAY 9 START
+// DAY 9 START
+// DAY 9 START
+// DAY 9 START
+// DAY 9 START
+// DAY 9 START
+// DAY 9 START
+// REGULAR EXPRESSION (REGAX) are used to 
+const studentSchema = new mongoose.Schema({
+    fullName:String,
+    age:Number,
+    coures:String,
+    marks:Number
+})
+const student = mongoose.model("Student", studentSchema)
+
+// app.post("/students", async(req,res)=>{
+//     await student.insertMany([
+//         {fullName:"Yash", age:21,coures:"BTechCSE", marks:97},
+//         {fullName:"vishal", age:20,coures:"BTech", marks:97},
+//         {fullName:"shikha", age:20,coures:"BTechIT", marks:98},
+//         {fullName:"sidh", age:22,coures:"BA", marks:66},
+//         {fullName:"priya", age:25,coures:"IT", marks:44},
+//         {fullName:"riya", age:27,coures:"BCA", marks:53},
+//         {fullName:"piya", age:29,coures:"BCom", marks:56},
+//         {fullName:"her", age:211,coures:"BCom", marks:59},
+//        
+//     ])
+//     res.send("Data Inserted")
+// })
+
+// find student those name start with "A" and it is case sensitive - using $regax 
+// app.get("/students", async(req,res)=>{
+//     const data = await student.find({fullName:{$regex:"Y"}})
+//     res.send(data)
+// })
+// case insensitive search
+// app.get("/students", async(req,res)=>{
+//     const data = await student.find({fullName:{$regex:"Y", $options:"i"}})
+//     res.send(data)
+// })
+
+
+// find student those name end with "h"
+// app.get("/students", async(req,res)=>{
+//     const data = await student.find({fullName:{$regex:"h$"}})
+//     res.send(data)
+// })
+
+// find all student except start with p
+// app.get("/students", async(req,res)=>{
+//     const data = await student.find({fullName:{$not:{$regex:"p"} }})
+//     res.send(data)
+// })
+
+
+// list top 2 student based on marks
+// app.get("/students", async(req,res)=>{
+//     const data = await student.find().sort({marks:-1}).limit(2)
+//     res.send(data)
+// })
+
+
+
+// list students age greater than 20 with course BCA
+// app.get("/students", async(req,res)=>{
+//     const data = await student.find({$and:[
+//         {age:{$gte:20}},
+//         {coures:"BCA"}
+//     ]})
+//     res.send(data)
+// })
+
+// list all student by skiing first three students
+// app.get("/students", async(req,res)=>{
+//     const data = await student.find().skip(2)
+//     res.send(data)
+// })
+
+
+// list all students age greater than 20 and marks greter than 85 also
+// app.get("/students", async(req,res)=>{
+//     const data = await student.find({$and:[
+//         {age:{$gte:20}},
+//         {marks:{$gte:85}}
+//     ]})
+//     res.send(data)
+// })
+app.get("/students", async (req, res) => {
+    const data = await student.find({
+        age: { $in: [22, 23] }
+    })
+    res.send(data)
+})
+
+// DAY 10
+// DAY 10
+// DAY 10
+// DAY 10
+// DAY 10
+// DAY 10
+// DAY 10
+// DAY 10
+const customerSchema = new mongoose.Schema({
+    customer:String,
+    product:String,
+    price:Number,
+    quantity:Number,
+    Status:String,
+    
+})
+
+const Order = mongoose.model("Order", customerSchema)
+app.post("/orders", async (req, res) => {
+    await Order.insertMany([
+        {customer:"Yash", product:"Laptop", price:50000, quantity:1, Status:"Pending"},
+        {customer:"Vishal", product:"Mobile", price:20000, quantity:2, Status:"Delivered"},
+        {customer:"Shikha", product:"Headphones", price:3000, quantity:3, Status:"Shipped"},
+        {customer:"Sidh", product:"Keyboard", price:1500, quantity:1, Status:"Pending"},
+        {customer:"Priya", product:"Mouse", price:800, quantity:4, Status:"Delivered"}
+    ])
+
+    res.send("Data Inserted")
+})
+
+// $match filtering
+// app.get("/orders", async(req,res)=>{
+//     const orders = await Order.aggregate([
+//         {$match:{Status:"Shipped"}}
+//     ])
+//     res.json(orders)
+// })
+
+
+
+
+
+// $group(group data)
+// app.get("/orders", async(req,res)=>{
+//     const orders = await Order.aggregate([
+//         {$group:
+//             {
+//                 _id:"$customer", 
+//                 totalQuantity:{$sum:"$quantity"}
+//             }
+//         }
+//     ])
+//     res.json(orders)
+// })
+
+
+// $project is used to select fields, hide, rename, fields, or create new computed fields in the result
+
+
+
+// app.get("/orders", async(req,res)=>{
+//     const orders = await Order.aggregate([
+//         {$project:{
+//             _id:0,
+//             customer:1,
+//             price:1,
+//             quantity:1,
+//             Amount:{$multiply:["$price","$quantity"]},
+//             totalWithTax:{$multiply:["$price", "$quantity", 1.18]}
+//         }}
+//     ])
+//     res.json(orders)
+// })
+
+
+// app.get("/orders", async(req,res)=>{
+//     const orders = await Order.aggregate([
+//         {$project:{
+//             _id:0,
+//             customer:1,
+//             price:1,
+//             quantity:1,
+//             Amount:{$multiply:["$price","$quantity"]},
+//             totalWithTax:{$multiply:["$price", "$quantity", 1.18]}
+//         }}
+//     ])
+//     res.json(orders)
+// })
+
+
+app.get("/orders", async(req,res)=>{
+    const orders = await Order.aggregate([
+        {$project:{
+            _id:0,
+            customer:1,
+            price:1,
+            quantity:1,
+            Amount:{$multiply:["$price","$quantity"]},
+            Discount:{$multiply:["$price","$quantity",0.1]},
+            Payment:{$subtract:[{$multiply:["$price", "$quantity"]},{$multiply:["$price","$quantity", 0.1]}]}
+           
+        }}
+    ])
+    res.json(orders)
+})
+
+
+// hide id 
+// customer,
+// price, 
+// quantity, 
+// Amount, 
+// Discount(10%) 
+// Payment 
+
+
+
+
+
+
+
+
 app.listen(5000,()=>{
     console.log("server is running")
 })
