@@ -1,0 +1,38 @@
+<!-- <div class="hero">
+    <img class="hero img" src="images/mclaren_p2.jpg" alt="car1">
+    <div class="hero-text">
+    <h1>Qualified Car Repair
+        <br>
+        Service Center
+        </h1>
+    <button class="btn-car">Book Service</button>
+    </div>
+</div> -->
+
+
+<section class="hero">
+  <div class="hero-bg">
+    <img src="images/mclaren_p2.jpg" alt="Qualified Car Repair Service">
+  </div>
+  
+  <div class="hero-content">
+    <h1 class="hero-title">
+      Qualified Car <span class="text-highlight">Repair</span><br>
+      Service Center
+    </h1>
+    <div class="hero-actions" id="heroActions">
+      <a href="/login" class="btn-car">Login</a>
+      <a href="/register" class="btn-car" style="background-color: #333; margin-left: 10px;">Sign Up</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const heroActions = document.getElementById('heroActions');
+    const token = localStorage.getItem('userToken');
+    if (token && heroActions) {
+      heroActions.innerHTML = '<a href="/service" class="btn-car">Book Services</a>';
+    }
+  });
+</script>

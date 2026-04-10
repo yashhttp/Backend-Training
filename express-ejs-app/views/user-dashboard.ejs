@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard - AutoExpert</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css1/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* ============ OVERRIDE GLOBAL CART STYLES ============ */
+    #serviceRequests .cart-item small,
+    #serviceRequests .cart-item small.text-muted,
+    #serviceRequests .service-meta {
+      color: #495057 !important;
+      font-weight: 500 !important;
+    }
+
+    #serviceRequests .cart-item h6,
+    #serviceRequests .cart-item strong {
+      color: #1a1a2e !important;
+      font-weight: 700 !important;
+    }
+
+    #cartItems .cart-item small,
+    #cartItems .cart-item small.text-muted {
+      color: #6c757d !important;
+    }
+
+    #cartItems .cart-item h6 {
+      color: #1a1a2e !important;
+    }
+
+    /* ============ DASHBOARD HERO SECTION ============ */
+    .dashboard-hero {
+      position: relative;
+      width: 100%;
+      height: 65vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    }
+
+    .dashboard-hero-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .dashboard-hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.4;
+      animation: slowZoom 25s infinite alternate;
+    }
+
+    .dashboard-hero-bg::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(26, 26, 46, 0.6) 0%, rgba(22, 33, 62, 0.7) 100%);
+    }
+
+    .dashboard-hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: white;
+      padding: 0 20px;
+      animation: fadeInUp 1.2s ease-out;
+    }
+
+    .dashboard-hero-content h1 {
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -1.5px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      animation: slideDown 1s ease-out;
+    }
+
+    .dashboard-hero-content p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+      letter-spacing: 0.5px;
+      animation: slideUp 1s ease-out;
+    }
+
+    .dashboard-hero-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeIn 1.5s ease-out;
+    }
+
+    .dashboard-hero-buttons .btn {
+      padding: 12px 35px;
+      font-weight: 600;
+      font-size: 1rem;
+      border: 2px solid;
+      border-radius: 50px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary-dash {
+      background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+      color: white;
+      border-color: #0d6efd;
+    }
+
+    .btn-primary-dash:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(13, 110, 253, 0.4);
+      background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
+    }
+
+    .btn-light-dash {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-color: white;
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-light-dash:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(255, 255, 255, 0.2);
+    }
+
+    /* ============ MAIN DASHBOARD CONTENT ============ */
+    .dashboard-main {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: calc(100vh - 65vh);
+      padding: 60px 0;
+      position: relative;
+    }
+
+    .dashboard-main::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(13, 110, 253, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(156, 39, 176, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .dashboard-cards-wrapper {
+      position: relative;
+      z-index: 2;
+    }
+
+    .dashboard-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+      padding: 35px;
+      margin-bottom: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #0d6efd, #9c27b0, #e74c3c);
+      animation: slideRight 3s ease-in-out infinite;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+    }
+
+    .dashboard-card h3 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dashboard-card h3 i {
+      font-size: 1.8rem;
+    }
+
+    /* ============ CART ITEMS ============ */
+    .cart-item {
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+      transition: all 0.3s ease;
+      border-left: 4px solid #0d6efd;
+    }
+
+    .cart-item:hover {
+      transform: translateX(8px);
+      box-shadow: 0 8px 20px rgba(13, 110, 253, 0.15);
+      border-left-color: #9c27b0;
+    }
+
+    .cart-item h6 {
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+      font-size: 1.1rem;
+    }
+
+    .cart-item small {
+      color: #6c757d;
+      font-size: 0.95rem;
+    }
+
+    /* ============ STATUS BADGES ============ */
+    .status-badge {
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      backdrop-filter: blur(10px);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .status-pending {
+      background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+      color: #856404;
+      border: 1px solid #ffc107;
+    }
+
+    .status-in-progress {
+      background: linear-gradient(135deg, #cce5ff 0%, #a8d8ff 100%);
+      color: #004085;
+      border: 1px solid #0d6efd;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .status-completed {
+      background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+      color: #155724;
+      border: 1px solid #28a745;
+    }
+
+    .status-cancelled {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+      color: #721c24;
+      border: 1px solid #dc3545;
+    }
+
+    /* ============ EMPTY STATE ============ */
+    .empty-state {
+      text-align: center;
+      padding: 60px 30px;
+      color: #6c757d;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .empty-state i {
+      font-size: 72px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+      background: linear-gradient(135deg, #0d6efd, #9c27b0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .empty-state h5 {
+      font-weight: 700;
+      color: #1a1a2e;
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+    }
+
+    .empty-state p {
+      color: #6c757d;
+      font-size: 1rem;
+    }
+
+    .empty-state a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #0d6efd;
+      transition: all 0.3s ease;
+    }
+
+    .empty-state a:hover {
+      color: #9c27b0;
+      text-decoration: underline;
+    }
+
+    /* ============ ANIMATIONS ============ */
+    @keyframes slowZoom {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideRight {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* ============ RESPONSIVE ============ */
+    @media (max-width: 768px) {
+      .dashboard-hero {
+        height: 50vh;
+      }
+
+      .dashboard-hero-content h1 {
+        font-size: 2rem;
+      }
+
+      .dashboard-card {
+        padding: 20px;
+      }
+
+      .dashboard-hero-buttons {
+        flex-direction: column;
+      }
+
+      .dashboard-hero-buttons .btn {
+        width: 100%;
+      }
+    }
+
+    /* ============ ACCENT ELEMENTS ============ */
+    .cart-summary {
+      background: linear-gradient(135deg, #f0f4ff 0%, #f9f3ff 100%);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #e0e7ff;
+      margin-top: 20px;
+    }
+
+    .cart-summary-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e0e7ff;
+    }
+
+    .cart-summary-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .cart-summary-item strong {
+      color: #1a1a2e;
+    }
+
+    .btn-continue {
+      background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      border: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-continue:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(13, 110, 253, 0.4);
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <%- include('partials/navbar') %>
+
+  <!-- HERO SECTION -->
+  <section class="dashboard-hero">
+    <div class="dashboard-hero-bg">
+      <img src="/images/road-navigation-display.jpg" alt="Dashboard background">
+    </div>
+    <div class="dashboard-hero-content">
+      <h1>Your Dashboard</h1>
+      <p>Track your bookings and manage your service requests seamlessly</p>
+      <div class="dashboard-hero-buttons">
+        <a href="/service" class="btn btn-primary-dash">
+          <i class="fas fa-plus-circle me-2"></i> Book More Services
+        </a>
+        <a href="/" class="btn btn-light-dash">
+          <i class="fas fa-arrow-left me-2"></i> Back to Home
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <section class="dashboard-main">
+    <div class="container dashboard-cards-wrapper">
+      <div class="row">
+        <!-- CART COLUMN -->
+        <div class="col-lg-6">
+          <div class="dashboard-card">
+            <h3>
+              <i class="fas fa-shopping-cart text-primary"></i>
+              Your Service Cart
+            </h3>
+            <div id="cartItems">
+              <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h5>Cart is Empty</h5>
+                <p>No pending services in your cart. <a href="/service">Start booking now →</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SERVICE REQUESTS COLUMN -->
+        <div class="col-lg-6">
+          <div class="dashboard-card">
+            <h3>
+              <i class="fas fa-list-check text-success"></i>
+              Service Requests
+            </h3>
+            <div id="serviceRequests">
+              <div class="empty-state">
+                <i class="fas fa-folder-open"></i>
+                <h5>No Requests Yet</h5>
+                <p>Your service history will appear here</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <%- include('partials/footer') %>
+  </footer>
+
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Dashboard loaded, initializing cart and orders...');
+      loadCart();
+      loadServiceRequests();
+      
+      // Auto-refresh service requests every 3 seconds
+      setInterval(loadServiceRequests, 3000);
+    });
+
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('bookingCart') || '[]');
+      const cartContainer = document.getElementById('cartItems');
+      console.log('Cart items found:', cart.length);
+
+      if (cart.length === 0) {
+        cartContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-inbox"></i>
+            <h5>Cart is Empty</h5>
+            <p>No pending services in your cart. <a href="/service">Start booking now →</a></p>
+          </div>
+        `;
+        return;
+      }
+
+      let totalCost = 0;
+      let totalTime = 0;
+
+      const cartHtml = cart.map((item, index) => {
+        totalCost += Number(item.price || 0);
+        const minutes = parseDuration(item.duration);
+        totalTime += minutes;
+
+        return `
+          <div class="cart-item">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div style="flex: 1;">
+                <h6>${item.title}</h6>
+                <small>${item.duration} • <strong>$${Number(item.price).toFixed(2)}</strong></small>
+              </div>
+              <button class="btn btn-sm btn-outline-danger ms-2" onclick="removeFromCart(${index})" title="Remove from cart">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      cartContainer.innerHTML = `
+        ${cartHtml}
+        <div class="cart-summary">
+          <div class="cart-summary-item">
+            <span><i class="fas fa-hourglass-end me-2"></i> Total Time:</span>
+            <strong>${formatDuration(totalTime)}</strong>
+          </div>
+          <div class="cart-summary-item">
+            <span><i class="fas fa-dollar-sign me-2"></i> Total Cost:</span>
+            <strong>$${totalCost.toFixed(2)}</strong>
+          </div>
+          <a href="/service" class="btn btn-continue">
+            <i class="fas fa-shopping-bag me-2"></i> Proceed to Checkout
+          </a>
+        </div>
+      `;
+    }
+
+    function removeFromCart(index) {
+      const cart = JSON.parse(localStorage.getItem('bookingCart') || '[]');
+      cart.splice(index, 1);
+      localStorage.setItem('bookingCart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    async function loadServiceRequests() {
+      const token = localStorage.getItem('userToken');
+      if (!token) {
+        console.log('No token found - user not logged in');
+        return;
+      }
+
+      try {
+        console.log('Fetching service requests...');
+        const response = await fetch('/user/orders', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Service requests loaded successfully:', data.orders.length);
+          renderServiceRequests(data.orders);
+        } else {
+          const errorData = await response.json();
+          console.error('Failed to load requests:', errorData);
+        }
+      } catch (error) {
+        console.error('Error loading service requests:', error.message);
+      }
+    }
+
+    function renderServiceRequests(orders) {
+      const container = document.getElementById('serviceRequests');
+
+      if (!orders || orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-folder-open"></i>
+            <h5>No Requests Yet</h5>
+            <p>Your service history will appear here</p>
+          </div>
+        `;
+        return;
+      }
+
+      const requestsHtml = orders.map(order => {
+        const statusClass = `status-${order.status.replace(/\s+/g, '-').toLowerCase()}`;
+        const statusText = order.status.toUpperCase();
+
+        const itemsHtml = order.items.map(item => `
+          <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 2px solid #e9ecef;">
+            <div style="display: block; margin-bottom: 6px;">
+              <strong style="font-size: 1.05rem; color: #1a1a2e; font-weight: 700; display: block;">${item.title}</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <small style="color: #495057; font-weight: 500;">⏱️ ${item.duration}</small>
+              <small style="color: #0d6efd; font-weight: 600; font-size: 1rem;">💲 $${Number(item.price).toFixed(2)}</small>
+            </div>
+          </div>
+        `).join('');
+
+        const orderDate = new Date(order.createdAt);
+        const dateFormatted = orderDate.toLocaleDateString() + ' at ' + orderDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        return `
+          <div class="cart-item">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <span class="status-badge ${statusClass}">${statusText}</span>
+              <small style="color: #495057; font-weight: 500;" class="text-end">📅 ${dateFormatted}</small>
+            </div>
+            <div style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); padding: 16px; border-radius: 10px; margin-bottom: 12px; border-left: 4px solid #0d6efd;">
+              ${itemsHtml}
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 2px solid #e9ecef; background: linear-gradient(135deg, rgba(13, 110, 253, 0.05) 0%, rgba(156, 39, 176, 0.05) 100%); padding: 12px; border-radius: 8px;">
+              <div>
+                <small style="color: #495057;"><strong style="color: #1a1a2e; font-size: 1.05rem;">⏳ ${order.totalTime}</strong></small>
+                <small style="color: #6c757d; margin-left: 10px;"> • </small>
+                <small style="color: #0d6efd; font-weight: 600; margin-left: 10px;"><strong>💰 $${Number(order.totalCost).toFixed(2)}</strong></small>
+              </div>
+              <small style="color: #6c757d; background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-family: monospace; font-size: 0.8rem;"><strong style="color: #495057;">Order ID: ${order._id.substring(0, 8)}</strong></small>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = requestsHtml;
+    }
+
+    function parseDuration(duration) {
+      if (!duration) return 0;
+      const string = String(duration).trim();
+      const hoursMatch = string.match(/(\d+(?:\.\d+)?)\s*h/);
+      const minsMatch = string.match(/(\d+(?:\.\d+)?)\s*m/);
+      let total = 0;
+      if (hoursMatch) total += parseFloat(hoursMatch[1]) * 60;
+      if (minsMatch) total += parseFloat(minsMatch[1]);
+      if (!hoursMatch && !minsMatch) total = parseFloat(string) || 0;
+      return Math.round(total);
+    }
+
+    function formatDuration(minutes) {
+      if (minutes >= 60) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return mins ? `${hours}h ${mins}m` : `${hours}h`;
+      }
+      return `${minutes}m`;
+    }
+  </script>
+</body>
+</html>
+
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      loadCart();
+      loadServiceRequests();
+      
+      // Auto-refresh service requests every 3 seconds
+      setInterval(loadServiceRequests, 3000);
+    });
+
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem('bookingCart') || '[]');
+      const cartContainer = document.getElementById('cartItems');
+
+      if (cart.length === 0) {
+        cartContainer.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-shopping-cart"></i>
+            <h5>Your cart is empty</h5>
+            <p>Add services from our <a href="/service">services page</a></p>
+          </div>
+        `;
+        return;
+      }
+
+      let totalCost = 0;
+      let totalTime = 0;
+
+      const cartHtml = cart.map((item, index) => {
+        totalCost += Number(item.price || 0);
+        const minutes = parseDuration(item.duration);
+        totalTime += minutes;
+
+        return `
+          <div class="cart-item">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <h6 class="mb-1">${item.title}</h6>
+                <small class="text-muted">${item.duration} • $${Number(item.price).toFixed(2)}</small>
+              </div>
+              <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${index})">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      cartContainer.innerHTML = `
+        ${cartHtml}
+        <hr>
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <strong>Total: $${totalCost.toFixed(2)}</strong><br>
+            <small class="text-muted">Time: ${formatDuration(totalTime)}</small>
+          </div>
+          <a href="/service" class="btn btn-primary">Continue Booking</a>
+        </div>
+      `;
+    }
+
+    function removeFromCart(index) {
+      const cart = JSON.parse(localStorage.getItem('bookingCart') || '[]');
+      cart.splice(index, 1);
+      localStorage.setItem('bookingCart', JSON.stringify(cart));
+      loadCart();
+    }
+
+    async function loadServiceRequests() {
+      const token = localStorage.getItem('userToken');
+      if (!token) {
+        console.log('No token found, cannot load service requests');
+        document.getElementById('serviceRequests').innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-sign-in-alt"></i>
+            <h5>Please login to view your requests</h5>
+            <a href="/login" class="btn btn-primary">Login</a>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const response = await fetch('/user/orders', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Service requests loaded:', data);
+          renderServiceRequests(data.orders);
+        } else {
+          console.error('Failed to load service requests. Status:', response.status);
+          const errorData = await response.json();
+          console.error('Error response:', errorData);
+          document.getElementById('serviceRequests').innerHTML = `
+            <div class="empty-state">
+              <i class="fas fa-exclamation-triangle"></i>
+              <h5>Unable to load service requests</h5>
+              <p>Error: ${errorData.error || response.statusText}</p>
+              <p>Please try refreshing the page</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error('Error loading service requests:', error);
+        document.getElementById('serviceRequests').innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h5>Error loading service requests</h5>
+            <p>${error.message}</p>
+            <p>Please try again later</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderServiceRequests(orders) {
+      const container = document.getElementById('serviceRequests');
+
+      if (!orders || orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-tools"></i>
+            <h5>No service requests yet</h5>
+            <p>Your booking history will appear here</p>
+          </div>
+        `;
+        return;
+      }
+
+      const requestsHtml = orders.map(order => {
+        const statusClass = `status-${order.status.replace(/\s+/g, '-').toLowerCase()}`;
+        const statusText = order.status.charAt(0).toUpperCase() + order.status.slice(1);
+
+        const itemsHtml = order.items.map(item => `
+          <div class="mb-1">
+            <small><strong>${item.title}</strong> - ${item.duration} - $${Number(item.price).toFixed(2)}</small>
+          </div>
+        `).join('');
+
+        const orderDate = new Date(order.createdAt);
+        const dateFormatted = orderDate.toLocaleDateString() + ' ' + orderDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
+        return `
+          <div class="cart-item">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <span class="status-badge ${statusClass}">${statusText}</span>
+                <small class="text-muted d-block">${dateFormatted}</small>
+              </div>
+            </div>
+            ${itemsHtml}
+            <hr class="my-2">
+            <div class="d-flex justify-content-between">
+              <small><strong>Total:</strong> ${order.totalTime} • $${Number(order.totalCost).toFixed(2)}</small>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = requestsHtml;
+    }
+
+    function parseDuration(duration) {
+      if (!duration) return 0;
+      const string = String(duration).trim();
+      const hoursMatch = string.match(/(\d+(?:\.\d+)?)\s*h/);
+      const minsMatch = string.match(/(\d+(?:\.\d+)?)\s*m/);
+      let total = 0;
+      if (hoursMatch) total += parseFloat(hoursMatch[1]) * 60;
+      if (minsMatch) total += parseFloat(minsMatch[1]);
+      if (!hoursMatch && !minsMatch) total = parseFloat(string) || 0;
+      return Math.round(total);
+    }
+
+    function formatDuration(minutes) {
+      if (minutes >= 60) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return mins ? `${hours}h ${mins}m` : `${hours}h`;
+      }
+      return `${minutes}m`;
+    }
+  </script>
+</body>
+</html>

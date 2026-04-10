@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css1/style.css">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <title>Home</title>
+</head>
+<body class="site-body">
+  <%- include('partials/navbar')%>
+  <main class="site-main">
+  <section class="service-hero text-white py-5">
+    <div class="container text-center">
+      <p class="eyebrow-text text-primary mb-2">Premium Auto Care</p>
+      <h1 class="section-title mb-3">Our <span class="text-highlight">Services</span></h1>
+      <p class="lead service-hero-text mx-auto" style="max-width: 700px; color: rgba(255,255,255,0.82);">Built for bold performance and expert repairs — discover services designed to deliver reliability, speed, and modern style.</p>
+    </div>
+  </section>
+
+  <section class="services-section py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="row justify-content-center mb-4">
+            <div class="col-lg-10 text-center mx-auto">
+              <p class="eyebrow-text text-primary mb-2">Service Collections</p>
+              <h2 class="section-title mb-3">Engineered for <span class="text-highlight">Every Ride</span></h2>
+              <p class="mb-0" style="color: rgba(255,255,255,0.75);">Add services to your booking cart, then review the total time and cost before checkout.</p>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <% services.forEach(function(item){ %>
+              <div class="col-12 col-sm-6">
+                <div class="service-card h-100">
+                  <div class="card-img-wrapper">
+                    <img src="<%= item.image %>" class="card-img-top" alt="<%= item.title %>">
+                    <div class="card-overlay"></div>
+                  </div>
+                  <div class="card-body text-start">
+                    <h5 class="card-title"><%= item.title %></h5>
+                    <p class="service-meta mb-3 text-muted">
+                      <span><%= item.duration || '45m' %></span> • 
+                      <span>$<%= item.price != null ? item.price.toFixed(2) : '0.00' %></span>
+                    </p>
+                    <div class="accent-line mb-3"></div>
+                    <button class="btn btn-outline-light btn-sm add-to-cart-btn" type="button"
+                      data-title="<%= item.title %>"
+                      data-price="<%= item.price || 0 %>"
+                      data-duration="<%= item.duration || '0m' %>">
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="booking-cart card booking-card h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <p class="eyebrow-text text-primary mb-1">Your Booking</p>
+                  <h4 class="mb-0">Cart Summary</h4>
+                </div>
+                <span class="badge bg-primary" id="cartCount">0</span>
+              </div>
+
+              <div id="cartItems" class="cart-items mb-4">
+                <p class="text-muted">No services added yet.</p>
+              </div>
+
+              <div class="cart-summary mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                  <span>Total time</span>
+                  <strong id="cartTotalTime">0 min</strong>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                  <span>Total cost</span>
+                  <strong id="cartTotalCost">$0.00</strong>
+                </div>
+              </div>
+
+              <button id="checkoutBtn" class="btn btn-primary w-100 mb-2" type="button">Proceed to Booking</button>
+              <button id="clearCartBtn" class="btn btn-outline-light w-100" type="button">Clear Cart</button>
+              <p class="text-muted mt-3 mb-0">If you are not registered, the booking button will guide you to register first.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    const cartKey = 'bookingCart';
+    const cartItemsEl = document.getElementById('cartItems');
+    const cartCountEl = document.getElementById('cartCount');
+    const cartTotalTimeEl = document.getElementById('cartTotalTime');
+    const cartTotalCostEl = document.getElementById('cartTotalCost');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const clearCartBtn = document.getElementById('clearCartBtn');
+
+    let cart = JSON.parse(localStorage.getItem(cartKey) || '[]');
+
+    const parseMinutes = (duration) => {
+      if (!duration) return 0;
+      const string = String(duration).trim();
+      const hoursMatch = string.match(/(\d+(?:\.\d+)?)\s*h/);
+      const minsMatch = string.match(/(\d+(?:\.\d+)?)\s*m/);
+      let total = 0;
+      if (hoursMatch) total += parseFloat(hoursMatch[1]) * 60;
+      if (minsMatch) total += parseFloat(minsMatch[1]);
+      if (!hoursMatch && !minsMatch) total = parseFloat(string) || 0;
+      return Math.round(total);
+    };
+
+    const formatDuration = (minutes) => {
+      if (minutes >= 60) {
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return mins ? `${hours}h ${mins}m` : `${hours}h`;
+      }
+      return `${minutes}m`;
+    };
+
+    const saveCart = () => {
+      localStorage.setItem(cartKey, JSON.stringify(cart));
+      renderCart();
+    };
+
+    const renderCart = () => {
+      cartItemsEl.innerHTML = '';
+      if (!cart.length) {
+        cartItemsEl.innerHTML = '<p class="text-muted">No services added yet.</p>';
+        cartCountEl.textContent = '0';
+        cartTotalTimeEl.textContent = '0 min';
+        cartTotalCostEl.textContent = '$0.00';
+        return;
+      }
+
+      let totalMinutes = 0;
+      let totalCost = 0;
+
+      cart.forEach((item, index) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = 'cart-item d-flex justify-content-between align-items-start mb-3';
+        itemEl.innerHTML = `
+          <div>
+            <h6 class="mb-1">${item.title}</h6>
+            <small class="text-muted">${item.duration} • $${Number(item.price).toFixed(2)}</small>
+          </div>
+          <button class="btn btn-sm btn-outline-light remove-cart-item" data-index="${index}">Remove</button>
+        `;
+        cartItemsEl.appendChild(itemEl);
+        totalMinutes += parseMinutes(item.duration);
+        totalCost += Number(item.price || 0);
+      });
+
+      cartCountEl.textContent = String(cart.length);
+      cartTotalTimeEl.textContent = formatDuration(totalMinutes);
+      cartTotalCostEl.textContent = `$${totalCost.toFixed(2)}`;
+
+      cartItemsEl.querySelectorAll('.remove-cart-item').forEach((button) => {
+        button.addEventListener('click', () => {
+          const index = Number(button.dataset.index);
+          cart.splice(index, 1);
+          saveCart();
+        });
+      });
+    };
+
+    document.querySelectorAll('.add-to-cart-btn').forEach((button) => {
+      button.addEventListener('click', () => {
+        const title = button.dataset.title;
+        const price = Number(button.dataset.price || 0);
+        const duration = button.dataset.duration || '0m';
+
+        if (cart.some((item) => item.title === title)) {
+          return;
+        }
+
+        cart.push({ title, price, duration });
+        saveCart();
+      });
+    });
+
+    checkoutBtn.addEventListener('click', async () => {
+      const token = localStorage.getItem('userToken');
+      if (!cart.length) return;
+      if (!token) {
+        window.location.href = '/register';
+        return;
+      }
+
+      // Calculate totals
+      let totalMinutes = 0;
+      let totalCost = 0;
+      cart.forEach(item => {
+        totalMinutes += parseMinutes(item.duration);
+        totalCost += Number(item.price || 0);
+      });
+
+      try {
+        const response = await fetch('/orders', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            items: cart,
+            totalCost: totalCost,
+            totalTime: formatDuration(totalMinutes)
+          })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+          alert('Your booking request has been submitted successfully! Our team will contact you soon.');
+          cart = [];
+          saveCart();
+          // Redirect to user dashboard to view the booking
+          setTimeout(() => {
+            window.location.href = '/user/dashboard';
+          }, 1500);
+        } else {
+          alert('Error submitting booking: ' + (result.message || 'Unknown error'));
+        }
+      } catch (error) {
+        console.error('Error submitting booking:', error);
+        alert('Error submitting booking. Please try again.');
+      }
+    });
+
+    clearCartBtn.addEventListener('click', () => {
+      cart = [];
+      saveCart();
+    });
+
+    renderCart();
+  </script>
+  </main>
+  <footer class="site-footer">
+    <%- include('partials/footer')%>
+  </footer>
+  <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

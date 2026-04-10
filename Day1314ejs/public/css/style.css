@@ -640,3 +640,136 @@ html {
     height: 180px;
   }
 }
+
+
+
+
+
+
+/* LOGIN SECTION */
+.login-section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+              url('') center/cover no-repeat;
+}
+
+/* Login Box */
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 30px;
+  border-radius: 20px;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  text-align: center;
+
+  transition: 0.4s ease;
+}
+
+.login-box:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+/* Title */
+.login-box h2 {
+  color: #ffc107;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.login-box p {
+  color: #ccc;
+  margin-bottom: 30px;
+}
+
+/* Input Group */
+.input-group {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-bottom: 2px solid #aaa;
+  background: transparent;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-group label {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  color: #bbb;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+/* Focus Effect */
+.input-group input:focus {
+  border-bottom: 2px solid #ffc107;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+  top: -10px;
+  font-size: 12px;
+  color: #ffc107;
+}
+
+/* Button */
+.login-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 25px;
+  border: none;
+
+  background: #ffc107;
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: 0.3s;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.login-btn:hover {
+  background: #ffca2c;
+  transform: scale(1.05);
+}
+
+/* Links */
+.login-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.login-links a {
+  color: #bbb;
+  font-size: 13px;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.login-links a:hover {
+  color: #ffc107;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .login-box {
+    padding: 30px 20px;
+  }
+}

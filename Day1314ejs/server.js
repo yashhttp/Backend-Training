@@ -21,7 +21,10 @@ app.get("/service", (req, res) => {
 app.get("/contact", (req, res) => {
     res.render("contact");
 });
-const PORT =5000
+app.get("/admin", (req, res) => {
+    res.render("admin/login");
+});
+const PORT =6000
 app.listen(PORT, (req,res)=>{
     console.log(`server is running on ${PORT}`)
 })

@@ -1,0 +1,84 @@
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-nav">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="#">
+      <span class="text-primary">AUTO</span>EXPERT
+    </a>
+    
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto"> <li class="nav-item">
+          <a class="nav-link active" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/about">About</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/service">Services</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/contact">Contact</a>
+        </li>
+        <li class="nav-item">
+          <a id="bookingLink" class="nav-link" href="/register">Book Services</a>
+        </li>
+
+      </ul>
+      
+      <div class="d-flex gap-2 align-items-center">
+        <span id="navUserName" class="navbar-text text-white d-none"></span>
+        <button id="logoutBtn" class="btn btn-outline-light btn-sm rounded-pill px-4 d-none" type="button">Logout</button>
+        <a id="loginBtn" href="/login" class="btn btn-outline-light btn-sm rounded-pill px-4">Login</a>
+        <a id="registerBtn" href="/register" class="btn btn-primary btn-sm rounded-pill px-4">Register</a>
+      </div>
+    </div>
+  </div>
+</nav>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const bookingLink = document.getElementById('bookingLink');
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const navUserName = document.getElementById('navUserName');
+
+    const token = localStorage.getItem('userToken');
+    const userName = localStorage.getItem('userName');
+
+    if (bookingLink) {
+      if (token) {
+        bookingLink.href = '/user/dashboard';
+        bookingLink.textContent = 'My Dashboard';
+      } else {
+        bookingLink.href = '/register';
+        bookingLink.textContent = 'Book Services';
+      }
+    }
+
+    if (token) {
+      if (loginBtn) loginBtn.classList.add('d-none');
+      if (registerBtn) registerBtn.classList.add('d-none');
+      if (logoutBtn) logoutBtn.classList.remove('d-none');
+      if (navUserName) {
+        navUserName.textContent = `Welcome, ${userName || 'User'}`;
+        navUserName.classList.remove('d-none');
+      }
+    } else {
+      if (logoutBtn) logoutBtn.classList.add('d-none');
+      if (navUserName) navUserName.classList.add('d-none');
+      if (loginBtn) loginBtn.classList.remove('d-none');
+      if (registerBtn) registerBtn.classList.remove('d-none');
+    }
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', function() {
+        localStorage.removeItem('userToken');
+        localStorage.removeItem('userName');
+        localStorage.removeItem('bookingCart');
+        window.location.reload();
+      });
+    }
+  });
+</script>
